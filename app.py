@@ -27,8 +27,35 @@ def create_task():
 def get_task(task_id):
 	task = Db.get_task_by_id(task_id)
 	if task is not None:
+		task['subtasks'] = Db.get_subtasks_of_task(task_id)
 		return json.dumps({'success': True, 'data': task}), 200
 	return json.dumps({'success': False, 'error': 'Task not found!'}), 404
+
+@app.route('/task/<int:task_id>/subtasks/', methods=['POST'])
+def create_subtask(task_id):
+	body = json.loads(request.data)
+	description = body['description']
+	try:
+		subtask = {
+			'id': Db.insert_subtask(description, False, task_id),
+			'description': description,
+			'done': False,
+			'task_id': task_id
+		}
+		return json.dumps({'success': True, 'data': subtask})
+	except sqlite3.IntegrityError:
+		return json.dumps({'success': False, 'error': 'Invalid task ID!'}), 404
+
+@app.route('/task/<int:task_id>/subtasks/')
+def get_subtasks_of_task(task_id):
+	res = {'success': True, 'data': Db.get_subtasks_of_task(task_id)}
+	return json.dumps(res), 200
+
+@app.route('/subtasks/')
+def get_subtasks():
+	res = {'success': True, 'data': Db.get_all_subtasks()}
+	return json.dumps(res), 200
+
 '''
 @app.route('/tasks/<int:task_id>/', methods=['POST'])
 def update_task(task_id):
