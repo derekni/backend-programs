@@ -65,17 +65,15 @@ def respond(id):
     post_body = json.loads(request.data)
     accepted = post_body['accepted']
     if accepted:
-        transaction, res = Db.accept_payment(id)
+        transaction = Db.accept_payment(id)
         if res:
             return json.dumps({'success': True, 'data': transaction}), 200
-        if not res:
-            return json.dumps({'success': False, 'data': transaction}), 404
-        return json.dumps({'success': False, 'error': 'User ID not found!'}), 404
+        return json.dumps({'success': False, 'error': 'Payment unable to be accepted!'}), 404
     else:
         transaction = Db.reject_payment(id)
         if transaction is not None:
             return json.dumps({'success': True, 'data': transaction}), 200
-        return json.dumps({'success': False, 'error': 'User ID not found!'}), 404
+        return json.dumps({'success': False, 'error': 'Payment unable to be denied!'}), 404
 
 if __name__ == '__main__':
 	app.run(host='0.0.0.0', port=5000, debug=True)

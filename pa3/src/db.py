@@ -159,9 +159,8 @@ class DB(object):
                 cursor.execute('UPDATE transactions SET accepted=? WHERE ID == ?;', (True, transaction_id))
                 cursor.execute('UPDATE transactions SET timestamp=? WHERE ID == ?;', (dt, transaction_id))
                 self.conn.commit()
-                return self.get_transaction_by_id(transaction_id), True
-            return self.get_transaction_by_id(transaction_id), False
-        return None, None
+                return self.get_transaction_by_id(transaction_id)
+        return None
     
     def reject_payment(self, transaction_id):
         transaction = self.get_transaction_by_id(transaction_id)
