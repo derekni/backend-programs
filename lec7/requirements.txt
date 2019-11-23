@@ -9,4 +9,4 @@ MarkupSafe==1.0
 pycparser==2.19
 six==1.11.0
 SQLAlchemy==1.2.12
-Werkzeug==0.14.1
+Werkzeug==0.15.3
